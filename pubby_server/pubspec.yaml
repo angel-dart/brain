@@ -1,0 +1,14 @@
+name: pubby_server
+publish_to: none
+version: 0.0.0
+dependencies: 
+  angel_common: ^1.0.0
+  angel_hot: ^1.0.0
+  angel_security: ^1.0.0
+  github: ^3.0.0
+  postgres: ^0.9.5
+  pubby_common:
+    path: ../pubby_common
+dev_dependencies:
+  angel_test: ^1.0.0
+  test: ^0.12.0

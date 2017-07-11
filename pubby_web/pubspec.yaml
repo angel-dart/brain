@@ -1,0 +1,19 @@
+name: pubby_web
+publish_to: none
+version: 0.0.0
+dependencies:
+  angular2: ^3.0.0
+  github: ^3.0.0
+  pubby_common:
+    path: ../pubby_common
+dev_dependencies:
+  browser: ^0.10.0
+  dart_to_js_script_rewriter: ^1.0.0
+transformers: 
+  - dart_to_js_script_rewriter
+  - angular2:
+        platform_directives:
+          - 'package:angular2/common.dart#COMMON_DIRECTIVES'
+        platform_pipes:
+          - 'package:angular2/common.dart#COMMON_PIPES'
+        entry_points: web/main.dart

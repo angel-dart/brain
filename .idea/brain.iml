@@ -7,11 +7,24 @@
       <excludeFolder url="file://$MODULE_DIR$/bin/packages" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_common/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_common/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_common/tool/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_orm/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_orm/build" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_orm/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/bin/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/build" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/build" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/packages" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tool/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/web/components/angel_brain/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/web/components/packages" />
       <excludeFolder url="file://$MODULE_DIR$/web/packages" />
     </content>
     <orderEntry type="inheritedJdk" />

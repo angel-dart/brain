@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="migrate::up" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application" singleton="true">
+    <option name="arguments" value="up" />
+    <option name="filePath" value="$PROJECT_DIR$/pubby_server/bin/migrate.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/pubby_server" />
+    <method />
+  </configuration>
+</component>

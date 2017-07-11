@@ -4,8 +4,8 @@
     <option name="envs">
       <entry key="ANGEL_ENV" value="production" />
     </option>
-    <option name="filePath" value="$PROJECT_DIR$/bin/server.dart" />
-    <option name="workingDirectory" value="$PROJECT_DIR$" />
+    <option name="filePath" value="$PROJECT_DIR$/pubby_server/bin/server.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/pubby_server" />
     <method />
   </configuration>
 </component>
