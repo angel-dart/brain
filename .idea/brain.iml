@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
-      <excludeFolder url="file://$MODULE_DIR$/bin/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/build" />
-      <excludeFolder url="file://$MODULE_DIR$/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_common/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_common/build" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_common/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_common/tool/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_orm/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_orm/build" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_orm/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_server/bin/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_server/build" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_server/packages" />
+    <content url="file://$MODULE_DIR$/pubby_common" />
+    <content url="file://$MODULE_DIR$/pubby_server" />
+    <content url="file://$MODULE_DIR$/pubby_web">
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/build" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/landing_page/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/not_found/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/pubby_app/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/images/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/temp" />
-      <excludeFolder url="file://$MODULE_DIR$/tmp" />
-      <excludeFolder url="file://$MODULE_DIR$/tool/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/web/packages" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

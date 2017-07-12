@@ -1,0 +1,30 @@
+<div class="uk-section uk-section-primary main">
+    <div uk-height-viewport="offset-top: true; offset-bottom: true"
+         class="uk-section uk-section-small uk-flex uk-flex-middle uk-text-center"
+         style="box-sizing: border-box;">
+        <div class="uk-width-1-1">
+            <div class="uk-container">
+                <p><img src="/images/logo-white.png" style="height: 4em;"></p>
+                <div class="uk-margin">
+                    <input [(ngModel)]="searchQuery" class="uk-input" type="text"
+                           placeholder="Search for Dart packages...">
+                </div>
+                <div id="big-buttons" class="uk-child-width-auto uk-grid-medium uk-flex-inline uk-flex-center uk-grid"
+                     uk-grid>
+                    <div class="uk-first-column">
+                        <button (click)="handleSubmit()"
+                                [class.uk-disabled]="searching"
+                                class="uk-button uk-button-primary tm-button-primary uk-button-large tm-button-large uk-visible@s">
+                            {{buttonText}}
+                        </button>
+                        <button (click)="handleSubmit()"
+                                [class.uk-disabled]="searching"
+                                class="uk-button uk-button-primary tm-button-primary uk-hidden@s">
+                            {{buttonText}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

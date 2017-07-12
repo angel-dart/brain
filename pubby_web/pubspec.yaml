@@ -2,6 +2,7 @@ name: pubby_web
 publish_to: none
 version: 0.0.0
 dependencies:
+  angel_client: ^1.0.0
   angular2: ^3.0.0
   github: ^3.0.0
   pubby_common:
@@ -14,6 +15,7 @@ transformers:
   - angular2:
         platform_directives:
           - 'package:angular2/common.dart#COMMON_DIRECTIVES'
+          - 'package:angular2/router.dart#ROUTER_DIRECTIVES'
         platform_pipes:
           - 'package:angular2/common.dart#COMMON_PIPES'
         entry_points: web/main.dart

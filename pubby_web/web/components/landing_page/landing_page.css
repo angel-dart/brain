@@ -1,0 +1,5 @@
+@media (min-width: 640px) {
+    .uk-input {
+        max-width: 50em;
+    }
+}

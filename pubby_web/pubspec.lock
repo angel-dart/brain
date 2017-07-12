@@ -7,6 +7,18 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.30.0+2"
+  angel_client:
+    description:
+      name: angel_client
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.7"
+  angel_framework:
+    description:
+      name: angel_framework
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.7+1"
   angel_model:
     description:
       name: angel_model
@@ -19,6 +31,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0-alpha+1"
+  angel_route:
+    description:
+      name: angel_route
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   angel_serialize:
     description:
       name: angel_serialize
@@ -49,6 +67,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.2+11"
+  body_parser:
+    description:
+      name: body_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   browser:
     description:
       name: browser
@@ -97,6 +121,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.2"
+  container:
+    description:
+      name: container
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   convert:
     description:
       name: convert
@@ -133,6 +163,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.10.5"
+  flatten:
+    description:
+      name: flatten
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   front_end:
     description:
       name: front_end
@@ -175,6 +211,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.1"
+  http_server:
+    description:
+      name: http_server
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.6"
   intl:
     description:
       name: intl
@@ -193,6 +235,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1"
+  json_god:
+    description:
+      name: json_god
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0-beta+1"
   kernel:
     description:
       name: kernel
@@ -211,12 +259,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.1+1"
+  merge_map:
+    description:
+      name: merge_map
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   meta:
     description:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  mime:
+    description:
+      name: mime
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.3"
   package_config:
     description:
       name: package_config
@@ -271,6 +331,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.24.0"
+  random_string:
+    description:
+      name: random_string
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   source_gen:
     description:
       name: source_gen
