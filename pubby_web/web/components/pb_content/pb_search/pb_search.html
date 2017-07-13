@@ -1,3 +1,7 @@
+<div class="uk-margin">
+    <input #input [(ngModel)]="query" class="uk-input" type="text"
+           placeholder="Search for Dart packages...">
+</div>
 <div *ngIf="s.packages.isEmpty">
     Empty state
 </div>

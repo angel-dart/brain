@@ -6,7 +6,7 @@
             <div class="uk-container">
                 <p><img src="/images/logo-white.png" style="height: 4em;"></p>
                 <div class="uk-margin">
-                    <input [(ngModel)]="searchQuery" class="uk-input" type="text"
+                    <input #input [(ngModel)]="searchQuery" class="uk-input" type="text"
                            placeholder="Search for Dart packages...">
                 </div>
                 <div id="big-buttons" class="uk-child-width-auto uk-grid-medium uk-flex-inline uk-flex-center uk-grid"

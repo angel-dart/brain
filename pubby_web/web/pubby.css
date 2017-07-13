@@ -2,8 +2,11 @@
     border-radius: 500px;
 }
 
-html, body {
+html, body, .pb-header {
     background: linear-gradient(to right, #007849, #06492f);
+}
+
+html, body {
     margin: 0;
 }
 
