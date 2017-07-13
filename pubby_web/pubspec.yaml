@@ -3,6 +3,7 @@ publish_to: none
 version: 0.0.0
 dependencies:
   angel_client: ^1.0.0
+  angel_paginate: ^1.0.0
   angular2: ^3.0.0
   github: ^3.0.0
   pubby_common:

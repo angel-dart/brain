@@ -1,0 +1,8 @@
+<div *ngIf="s.packages.isEmpty">
+    Empty state
+</div>
+<ul *ngIf="s.packages.isNotEmpty">
+    <li *ngFor="let package of s.packages;">
+        {{package.name}}
+    </li>
+</ul>

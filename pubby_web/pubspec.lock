@@ -31,6 +31,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0-alpha+1"
+  angel_paginate:
+    description:
+      name: angel_paginate
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+3"
   angel_route:
     description:
       name: angel_route
