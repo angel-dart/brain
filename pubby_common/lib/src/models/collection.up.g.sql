@@ -7,5 +7,6 @@ CREATE TABLE "collections" (
   "public" boolean,
   "featured" boolean,
   "created_at" timestamp,
-  "updated_at" timestamp
+  "updated_at" timestamp,
+  PRIMARY KEY(id)
 );

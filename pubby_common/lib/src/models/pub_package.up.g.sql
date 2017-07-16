@@ -9,5 +9,6 @@ CREATE TABLE "pub_packages" (
   "donation_link" varchar,
   "pre_release" boolean,
   "created_at" timestamp,
-  "updated_at" timestamp
+  "updated_at" timestamp,
+  PRIMARY KEY(id)
 );

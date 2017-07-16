@@ -61,17 +61,17 @@ configureServer(Angel app) async {
       var words =
           queryString.split(' ').where((s) => s.isNotEmpty).map(sanitize);
 
-      var query = new PubPackageQuery()..where.name.like(whole);
-      /*var query = words.fold<PubPackageQuery>(
+      //var query = new PubPackageQuery()..where.name.like(whole);
+      var query = words.fold<PubPackageQuery>(
           new PubPackageQuery()
             ..where.name.like(whole)
-            ..or(new PubPackageQuery()..where.description.like(whole)),
+            ..or(new PubPackageQueryWhere()..description.like(whole)),
           (q, word) {
         var k = '%$word%';
         return q
-          ..or(new PubPackageQuery()..where.name.like(word))
-          ..or(new PubPackageQuery()..where.description.like(word));
-      });*/
+          ..or(new PubPackageQueryWhere()..name.like(word))
+          ..or(new PubPackageQueryWhere()..description.like(word));
+      });
       print(query.toSql());
       var results = await query.get(connection).toList();
       var p = new Paginator<PubPackage>(results, itemsPerPage: perPage);

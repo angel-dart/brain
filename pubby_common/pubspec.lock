@@ -18,13 +18,13 @@ packages:
       name: angel_orm
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-alpha+1"
+    version: "1.0.0-alpha+7"
   angel_orm_generator:
     description:
       name: angel_orm_generator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-alpha"
+    version: "1.0.0-alpha+2"
   angel_serialize:
     description:
       name: angel_serialize
@@ -84,7 +84,7 @@ packages:
       name: cli_util
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2"
   code_builder:
     description:
       name: code_builder
@@ -326,4 +326,4 @@ packages:
     source: hosted
     version: "2.1.12"
 sdks:
-  dart: ">=1.24.0 <2.0.0"
+  dart: ">=1.24.0 <2.0.0-dev.infinity"

@@ -11,56 +11,87 @@ import 'package:postgres/postgres.dart';
 import 'pub_package.dart';
 
 class PubPackageQuery {
-  final List<String> _and = [];
+  final Map<PubPackageQuery, bool> _unions = {};
 
-  final List<String> _or = [];
+  String _sortKey;
 
-  final List<String> _not = [];
+  String _sortMode;
+
+  int limit;
+
+  int offset;
+
+  final List<PubPackageQueryWhere> _or = [];
 
   final PubPackageQueryWhere where = new PubPackageQueryWhere();
 
-  void and(PubPackageQuery other) {
-    var compiled = other.where.toWhereClause(keyword: false);
-    if (compiled != null) {
-      _and.add(compiled);
-    }
+  void union(PubPackageQuery query) {
+    _unions[query] = false;
   }
 
-  void or(PubPackageQuery other) {
-    var compiled = other.where.toWhereClause(keyword: false);
-    if (compiled != null) {
-      _or.add(compiled);
-    }
+  void unionAll(PubPackageQuery query) {
+    _unions[query] = true;
   }
 
-  void not(PubPackageQuery other) {
-    var compiled = other.where.toWhereClause(keyword: false);
-    if (compiled != null) {
-      _not.add(compiled);
-    }
+  void sortDescending(String key) {
+    _sortMode = 'Descending';
+    _sortKey = ('' + key);
   }
 
-  String toSql() {
-    var buf = new StringBuffer('SELECT * FROM "pub_packages"');
+  void sortAscending(String key) {
+    _sortMode = 'Ascending';
+    _sortKey = ('' + key);
+  }
+
+  void or(PubPackageQueryWhere selector) {
+    _or.add(selector);
+  }
+
+  String toSql([String prefix]) {
+    var buf = new StringBuffer();
+    buf.write(prefix != null
+        ? prefix
+        : 'SELECT id, user_id, name, version_string, description, readme, tags, donation_link, pre_release, created_at, updated_at FROM "pub_packages"');
+    if (prefix == null) {}
     var whereClause = where.toWhereClause();
     if (whereClause != null) {
       buf.write(' ' + whereClause);
     }
-    if (_and.isNotEmpty) {
-      buf.write(' AND (' + _and.join(',') + ')');
+    _or.forEach((x) {
+      var whereClause = x.toWhereClause(keyword: false);
+      if (whereClause != null) {
+        buf.write(' OR (' + whereClause + ')');
+      }
+    });
+    if (prefix == null) {
+      if (limit != null) {
+        buf.write(' LIMIT ' + limit.toString());
+      }
+      if (offset != null) {
+        buf.write(' OFFSET ' + offset.toString());
+      }
+      if (_sortMode == 'Descending') {
+        buf.write(' ORDER BY "' + _sortKey + '" DESC');
+      }
+      if (_sortMode == 'Ascending') {
+        buf.write(' ORDER BY "' + _sortKey + '" ASC');
+      }
+      _unions.forEach((query, all) {
+        buf.write(' UNION');
+        if (all) {
+          buf.write(' ALL');
+        }
+        buf.write(' (');
+        var sql = query.toSql().replaceAll(';', '');
+        buf.write(sql + ')');
+      });
+      buf.write(';');
     }
-    if (_or.isNotEmpty) {
-      buf.write(' OR (' + _or.join(',') + ')');
-    }
-    if (_not.isNotEmpty) {
-      buf.write(' NOT (' + _not.join(',') + ')');
-    }
-    buf.write(';');
     return buf.toString();
   }
 
   static PubPackage parseRow(List row) {
-    return new PubPackage.fromJson({
+    var result = new PubPackage.fromJson({
       'id': row[0].toString(),
       'user_id': row[1],
       'name': row[2],
@@ -73,20 +104,27 @@ class PubPackageQuery {
       'created_at': row[9],
       'updated_at': row[10]
     });
+    return result;
   }
 
   Stream<PubPackage> get(PostgreSQLConnection connection) {
     StreamController<PubPackage> ctrl = new StreamController<PubPackage>();
-    connection.query(toSql()).then((rows) {
-      rows.map(parseRow).forEach(ctrl.add);
+    connection.query(toSql()).then((rows) async {
+      var futures = rows.map((row) async {
+        var parsed = parseRow(row);
+        return parsed;
+      });
+      var output = await Future.wait(futures);
+      output.forEach(ctrl.add);
       ctrl.close();
     }).catchError(ctrl.addError);
     return ctrl.stream;
   }
 
   static Future<PubPackage> getOne(int id, PostgreSQLConnection connection) {
-    return connection.query('SELECT * FROM "pub_packages" WHERE "id" = @id;',
-        substitutionValues: {'id': id}).then((rows) => parseRow(rows.first));
+    var query = new PubPackageQuery();
+    query.where.id.equals(id);
+    return query.get(connection).first.catchError((_) => null);
   }
 
   Stream<PubPackage> update(PostgreSQLConnection connection,
@@ -124,33 +162,30 @@ class PubPackageQuery {
           'preRelease': preRelease,
           'createdAt': createdAt != null ? createdAt : __ormNow__,
           'updatedAt': updatedAt != null ? updatedAt : __ormNow__
-        }).then((rows) {
-      rows.map(parseRow).forEach(ctrl.add);
+        }).then((rows) async {
+      var futures = rows.map((row) async {
+        var parsed = parseRow(row);
+        return parsed;
+      });
+      var output = await Future.wait(futures);
+      output.forEach(ctrl.add);
       ctrl.close();
     }).catchError(ctrl.addError);
     return ctrl.stream;
   }
 
   Stream<PubPackage> delete(PostgreSQLConnection connection) {
-    var buf = new StringBuffer('DELETE FROM "pub_packages"');
-    var whereClause = where.toWhereClause();
-    if (whereClause != null) {
-      buf.write(' ' + whereClause);
-      if (_and.isNotEmpty) {
-        buf.write(' AND (' + _and.join(', ') + ')');
-      }
-      if (_or.isNotEmpty) {
-        buf.write(' OR (' + _or.join(', ') + ')');
-      }
-      if (_not.isNotEmpty) {
-        buf.write(' NOT (' + _not.join(', ') + ')');
-      }
-    }
-    buf.write(
-        ' RETURNING "id", "user_id", "name", "version_string", "description", "readme", "tags", "donation_link", "pre_release", "created_at", "updated_at";');
     StreamController<PubPackage> ctrl = new StreamController<PubPackage>();
-    connection.query(buf.toString()).then((rows) {
-      rows.map(parseRow).forEach(ctrl.add);
+    connection
+        .query(toSql('DELETE FROM "pub_packages"') +
+            ' RETURNING "id", "user_id", "name", "version_string", "description", "readme", "tags", "donation_link", "pre_release", "created_at", "updated_at";')
+        .then((rows) async {
+      var futures = rows.map((row) async {
+        var parsed = parseRow(row);
+        return parsed;
+      });
+      var output = await Future.wait(futures);
+      output.forEach(ctrl.add);
       ctrl.close();
     }).catchError(ctrl.addError);
     return ctrl.stream;
@@ -190,40 +225,41 @@ class PubPackageQuery {
           'createdAt': createdAt != null ? createdAt : __ormNow__,
           'updatedAt': updatedAt != null ? updatedAt : __ormNow__
         });
-    return parseRow(result[0]);
+    var output = parseRow(result[0]);
+    return output;
   }
 
   static Future<PubPackage> insertPubPackage(
-      PostgreSQLConnection connection, PubPackage pub_package) {
+      PostgreSQLConnection connection, PubPackage pubPackage) {
     return PubPackageQuery.insert(connection,
-        userId: pub_package.userId,
-        name: pub_package.name,
-        versionString: pub_package.versionString,
-        description: pub_package.description,
-        readme: pub_package.readme,
-        tags: pub_package.tags,
-        donationLink: pub_package.donationLink,
-        preRelease: pub_package.preRelease,
-        createdAt: pub_package.createdAt,
-        updatedAt: pub_package.updatedAt);
+        userId: pubPackage.userId,
+        name: pubPackage.name,
+        versionString: pubPackage.versionString,
+        description: pubPackage.description,
+        readme: pubPackage.readme,
+        tags: pubPackage.tags,
+        donationLink: pubPackage.donationLink,
+        preRelease: pubPackage.preRelease,
+        createdAt: pubPackage.createdAt,
+        updatedAt: pubPackage.updatedAt);
   }
 
   static Future<PubPackage> updatePubPackage(
-      PostgreSQLConnection connection, PubPackage pub_package) {
+      PostgreSQLConnection connection, PubPackage pubPackage) {
     var query = new PubPackageQuery();
-    query.where.id.equals(int.parse(pub_package.id));
+    query.where.id.equals(int.parse(pubPackage.id));
     return query
         .update(connection,
-            userId: pub_package.userId,
-            name: pub_package.name,
-            versionString: pub_package.versionString,
-            description: pub_package.description,
-            readme: pub_package.readme,
-            tags: pub_package.tags,
-            donationLink: pub_package.donationLink,
-            preRelease: pub_package.preRelease,
-            createdAt: pub_package.createdAt,
-            updatedAt: pub_package.updatedAt)
+            userId: pubPackage.userId,
+            name: pubPackage.name,
+            versionString: pubPackage.versionString,
+            description: pubPackage.description,
+            readme: pubPackage.readme,
+            tags: pubPackage.tags,
+            donationLink: pubPackage.donationLink,
+            preRelease: pubPackage.preRelease,
+            createdAt: pubPackage.createdAt,
+            updatedAt: pubPackage.updatedAt)
         .first;
   }
 
@@ -256,39 +292,39 @@ class PubPackageQueryWhere {
       new BooleanSqlExpressionBuilder();
 
   final DateTimeSqlExpressionBuilder createdAt =
-      new DateTimeSqlExpressionBuilder('created_at');
+      new DateTimeSqlExpressionBuilder('pub_packages.created_at');
 
   final DateTimeSqlExpressionBuilder updatedAt =
-      new DateTimeSqlExpressionBuilder('updated_at');
+      new DateTimeSqlExpressionBuilder('pub_packages.updated_at');
 
   String toWhereClause({bool keyword}) {
     final List<String> expressions = [];
     if (id.hasValue) {
-      expressions.add('"id" ' + id.compile());
+      expressions.add('pub_packages.id ' + id.compile());
     }
     if (userId.hasValue) {
-      expressions.add('"user_id" ' + userId.compile());
+      expressions.add('pub_packages.user_id ' + userId.compile());
     }
     if (name.hasValue) {
-      expressions.add('"name" ' + name.compile());
+      expressions.add('pub_packages.name ' + name.compile());
     }
     if (versionString.hasValue) {
-      expressions.add('"version_string" ' + versionString.compile());
+      expressions.add('pub_packages.version_string ' + versionString.compile());
     }
     if (description.hasValue) {
-      expressions.add('"description" ' + description.compile());
+      expressions.add('pub_packages.description ' + description.compile());
     }
     if (readme.hasValue) {
-      expressions.add('"readme" ' + readme.compile());
+      expressions.add('pub_packages.readme ' + readme.compile());
     }
     if (tags.hasValue) {
-      expressions.add('"tags" ' + tags.compile());
+      expressions.add('pub_packages.tags ' + tags.compile());
     }
     if (donationLink.hasValue) {
-      expressions.add('"donation_link" ' + donationLink.compile());
+      expressions.add('pub_packages.donation_link ' + donationLink.compile());
     }
     if (preRelease.hasValue) {
-      expressions.add('"pre_release" ' + preRelease.compile());
+      expressions.add('pub_packages.pre_release ' + preRelease.compile());
     }
     if (createdAt.hasValue) {
       expressions.add(createdAt.compile());

@@ -9,6 +9,11 @@
     </content>
     <content url="file://$MODULE_DIR$/pubby_server">
       <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub_mediator_temp/testing/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub_mediator_temp/testing/bin/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub_mediator_temp/testing/build" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub_mediator_temp/testing/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_server/.pub_mediator_temp/testing/test/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_server/bin/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_server/build" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_server/packages" />
@@ -20,7 +25,8 @@
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/landing_page/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/not_found/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/pb_search/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/pb_content/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/pb_content/pb_search/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/components/pubby_app/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/images/packages" />
       <excludeFolder url="file://$MODULE_DIR$/pubby_web/web/packages" />

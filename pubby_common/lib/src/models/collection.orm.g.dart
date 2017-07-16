@@ -11,56 +11,87 @@ import 'package:postgres/postgres.dart';
 import 'collection.dart';
 
 class CollectionQuery {
-  final List<String> _and = [];
+  final Map<CollectionQuery, bool> _unions = {};
 
-  final List<String> _or = [];
+  String _sortKey;
 
-  final List<String> _not = [];
+  String _sortMode;
+
+  int limit;
+
+  int offset;
+
+  final List<CollectionQueryWhere> _or = [];
 
   final CollectionQueryWhere where = new CollectionQueryWhere();
 
-  void and(CollectionQuery other) {
-    var compiled = other.where.toWhereClause(keyword: false);
-    if (compiled != null) {
-      _and.add(compiled);
-    }
+  void union(CollectionQuery query) {
+    _unions[query] = false;
   }
 
-  void or(CollectionQuery other) {
-    var compiled = other.where.toWhereClause(keyword: false);
-    if (compiled != null) {
-      _or.add(compiled);
-    }
+  void unionAll(CollectionQuery query) {
+    _unions[query] = true;
   }
 
-  void not(CollectionQuery other) {
-    var compiled = other.where.toWhereClause(keyword: false);
-    if (compiled != null) {
-      _not.add(compiled);
-    }
+  void sortDescending(String key) {
+    _sortMode = 'Descending';
+    _sortKey = ('' + key);
   }
 
-  String toSql() {
-    var buf = new StringBuffer('SELECT * FROM "collections"');
+  void sortAscending(String key) {
+    _sortMode = 'Ascending';
+    _sortKey = ('' + key);
+  }
+
+  void or(CollectionQueryWhere selector) {
+    _or.add(selector);
+  }
+
+  String toSql([String prefix]) {
+    var buf = new StringBuffer();
+    buf.write(prefix != null
+        ? prefix
+        : 'SELECT id, user_id, name, description, website, public, featured, created_at, updated_at FROM "collections"');
+    if (prefix == null) {}
     var whereClause = where.toWhereClause();
     if (whereClause != null) {
       buf.write(' ' + whereClause);
     }
-    if (_and.isNotEmpty) {
-      buf.write(' AND (' + _and.join(',') + ')');
+    _or.forEach((x) {
+      var whereClause = x.toWhereClause(keyword: false);
+      if (whereClause != null) {
+        buf.write(' OR (' + whereClause + ')');
+      }
+    });
+    if (prefix == null) {
+      if (limit != null) {
+        buf.write(' LIMIT ' + limit.toString());
+      }
+      if (offset != null) {
+        buf.write(' OFFSET ' + offset.toString());
+      }
+      if (_sortMode == 'Descending') {
+        buf.write(' ORDER BY "' + _sortKey + '" DESC');
+      }
+      if (_sortMode == 'Ascending') {
+        buf.write(' ORDER BY "' + _sortKey + '" ASC');
+      }
+      _unions.forEach((query, all) {
+        buf.write(' UNION');
+        if (all) {
+          buf.write(' ALL');
+        }
+        buf.write(' (');
+        var sql = query.toSql().replaceAll(';', '');
+        buf.write(sql + ')');
+      });
+      buf.write(';');
     }
-    if (_or.isNotEmpty) {
-      buf.write(' OR (' + _or.join(',') + ')');
-    }
-    if (_not.isNotEmpty) {
-      buf.write(' NOT (' + _not.join(',') + ')');
-    }
-    buf.write(';');
     return buf.toString();
   }
 
   static Collection parseRow(List row) {
-    return new Collection.fromJson({
+    var result = new Collection.fromJson({
       'id': row[0].toString(),
       'user_id': row[1],
       'name': row[2],
@@ -71,20 +102,27 @@ class CollectionQuery {
       'created_at': row[7],
       'updated_at': row[8]
     });
+    return result;
   }
 
   Stream<Collection> get(PostgreSQLConnection connection) {
     StreamController<Collection> ctrl = new StreamController<Collection>();
-    connection.query(toSql()).then((rows) {
-      rows.map(parseRow).forEach(ctrl.add);
+    connection.query(toSql()).then((rows) async {
+      var futures = rows.map((row) async {
+        var parsed = parseRow(row);
+        return parsed;
+      });
+      var output = await Future.wait(futures);
+      output.forEach(ctrl.add);
       ctrl.close();
     }).catchError(ctrl.addError);
     return ctrl.stream;
   }
 
   static Future<Collection> getOne(int id, PostgreSQLConnection connection) {
-    return connection.query('SELECT * FROM "collections" WHERE "id" = @id;',
-        substitutionValues: {'id': id}).then((rows) => parseRow(rows.first));
+    var query = new CollectionQuery();
+    query.where.id.equals(id);
+    return query.get(connection).first.catchError((_) => null);
   }
 
   Stream<Collection> update(PostgreSQLConnection connection,
@@ -118,33 +156,30 @@ class CollectionQuery {
           'featured': featured,
           'createdAt': createdAt != null ? createdAt : __ormNow__,
           'updatedAt': updatedAt != null ? updatedAt : __ormNow__
-        }).then((rows) {
-      rows.map(parseRow).forEach(ctrl.add);
+        }).then((rows) async {
+      var futures = rows.map((row) async {
+        var parsed = parseRow(row);
+        return parsed;
+      });
+      var output = await Future.wait(futures);
+      output.forEach(ctrl.add);
       ctrl.close();
     }).catchError(ctrl.addError);
     return ctrl.stream;
   }
 
   Stream<Collection> delete(PostgreSQLConnection connection) {
-    var buf = new StringBuffer('DELETE FROM "collections"');
-    var whereClause = where.toWhereClause();
-    if (whereClause != null) {
-      buf.write(' ' + whereClause);
-      if (_and.isNotEmpty) {
-        buf.write(' AND (' + _and.join(', ') + ')');
-      }
-      if (_or.isNotEmpty) {
-        buf.write(' OR (' + _or.join(', ') + ')');
-      }
-      if (_not.isNotEmpty) {
-        buf.write(' NOT (' + _not.join(', ') + ')');
-      }
-    }
-    buf.write(
-        ' RETURNING "id", "user_id", "name", "description", "website", "public", "featured", "created_at", "updated_at";');
     StreamController<Collection> ctrl = new StreamController<Collection>();
-    connection.query(buf.toString()).then((rows) {
-      rows.map(parseRow).forEach(ctrl.add);
+    connection
+        .query(toSql('DELETE FROM "collections"') +
+            ' RETURNING "id", "user_id", "name", "description", "website", "public", "featured", "created_at", "updated_at";')
+        .then((rows) async {
+      var futures = rows.map((row) async {
+        var parsed = parseRow(row);
+        return parsed;
+      });
+      var output = await Future.wait(futures);
+      output.forEach(ctrl.add);
       ctrl.close();
     }).catchError(ctrl.addError);
     return ctrl.stream;
@@ -180,7 +215,8 @@ class CollectionQuery {
           'createdAt': createdAt != null ? createdAt : __ormNow__,
           'updatedAt': updatedAt != null ? updatedAt : __ormNow__
         });
-    return parseRow(result[0]);
+    var output = parseRow(result[0]);
+    return output;
   }
 
   static Future<Collection> insertCollection(
@@ -236,33 +272,33 @@ class CollectionQueryWhere {
       new BooleanSqlExpressionBuilder();
 
   final DateTimeSqlExpressionBuilder createdAt =
-      new DateTimeSqlExpressionBuilder('created_at');
+      new DateTimeSqlExpressionBuilder('collections.created_at');
 
   final DateTimeSqlExpressionBuilder updatedAt =
-      new DateTimeSqlExpressionBuilder('updated_at');
+      new DateTimeSqlExpressionBuilder('collections.updated_at');
 
   String toWhereClause({bool keyword}) {
     final List<String> expressions = [];
     if (id.hasValue) {
-      expressions.add('"id" ' + id.compile());
+      expressions.add('collections.id ' + id.compile());
     }
     if (userId.hasValue) {
-      expressions.add('"user_id" ' + userId.compile());
+      expressions.add('collections.user_id ' + userId.compile());
     }
     if (name.hasValue) {
-      expressions.add('"name" ' + name.compile());
+      expressions.add('collections.name ' + name.compile());
     }
     if (description.hasValue) {
-      expressions.add('"description" ' + description.compile());
+      expressions.add('collections.description ' + description.compile());
     }
     if (website.hasValue) {
-      expressions.add('"website" ' + website.compile());
+      expressions.add('collections.website ' + website.compile());
     }
     if (public.hasValue) {
-      expressions.add('"public" ' + public.compile());
+      expressions.add('collections.public ' + public.compile());
     }
     if (featured.hasValue) {
-      expressions.add('"featured" ' + featured.compile());
+      expressions.add('collections.featured ' + featured.compile());
     }
     if (createdAt.hasValue) {
       expressions.add(createdAt.compile());

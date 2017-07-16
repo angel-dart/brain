@@ -7,6 +7,7 @@ dependencies:
   angel_paginate: ^1.0.0
   angel_security: ^1.0.0
   github: ^3.0.0
+  gitter: ^0.1.1
   postgres: ^0.9.5
   pubby_common:
     path: ../pubby_common
